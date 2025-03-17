@@ -43,7 +43,7 @@ vector<string> generate_word_ladder(const string& begin_word, const string& end_
     // string begin = lower(begin_word);
     // string end = lower(end_word);
 
-    if (begin_word == end_word or word_list.find(end_word) == word_list.end()) return {};
+    if (begin_word == end_word or !word_list.contains(end_word)) return {};
 
     queue<vector<string>> ladder_queue;
     ladder_queue.push({begin_word});
@@ -56,7 +56,7 @@ vector<string> generate_word_ladder(const string& begin_word, const string& end_
         string last_word = ladder.back();
 
         for (const string& word : word_list){
-            if (is_adjacent(last_word, word) && visited.find(word) == visited.end()){
+            if (is_adjacent(last_word, word) && !visited.contains(word)){
                 visited.insert(word);
                 vector<string> new_ladder = ladder;
                 new_ladder.push_back(word);
@@ -87,7 +87,7 @@ void print_word_ladder(const vector<string>& ladder){
     }  
 
     cout << "Word ladder found: ";
-    
+
     for (const string& s : ladder)
         cout << s << " ";
 
