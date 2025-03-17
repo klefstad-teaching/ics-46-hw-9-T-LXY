@@ -33,24 +33,22 @@ bool is_adjacent(const string& word1, const string& word2){
     return edit_distance_within(word1, word2, 1);
 }
 
-string lower(const string& str){
-    string lower(str);
-    transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
-    return lower;
-}
+// string lower(const string& str){
+//     string lower(str);
+//     transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+//     return lower;
+// }
 
 vector<string> generate_word_ladder(const string& begin_word, const string& end_word, const set<string>& word_list){
-    string begin = lower(begin_word);
-    string end = lower(end_word);
+    // string begin = lower(begin_word);
+    // string end = lower(end_word);
 
-    if (begin == end) return {};
+    if (begin_word == end_word or word_list.find(end_word) == word_list.end()) return {};
 
     queue<vector<string>> ladder_queue;
-    ladder_queue.push({begin});
+    ladder_queue.push({begin_word});
     set<string> visited;
-    visited.insert(begin);
-
-    if (word_list.find(end_word) == word_list.end()) return {};
+    visited.insert(begin_word);
 
     while (!ladder_queue.empty()){
         vector<string> ladder = ladder_queue.front();
@@ -63,7 +61,7 @@ vector<string> generate_word_ladder(const string& begin_word, const string& end_
                 vector<string> new_ladder = ladder;
                 new_ladder.push_back(word);
 
-                if (word == end) return new_ladder;
+                if (word == end_word) return new_ladder;
                 ladder_queue.push(new_ladder);
             }
         }
@@ -87,7 +85,9 @@ void print_word_ladder(const vector<string>& ladder){
         cout << "No word ladder found." << endl;
         return;
     }  
+
     cout << "Word ladder found: ";
+    
     for (const string& s : ladder)
         cout << s << " ";
 
