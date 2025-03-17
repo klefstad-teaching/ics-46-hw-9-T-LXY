@@ -6,56 +6,27 @@ void error(string word1, string word2, string msg) {
 }
 
 bool edit_distance_within(const std::string& str1, const std::string& str2, int d){
-    // int len1 = str1.size();
-    // int len2 = str2.size();
-
-    // if (abs(len1 - len2) > d) return false;
-
-    // vector<vector<int>> dp(len1 + 1, vector<int>(len2 + 1, 0));
-
-    // for (int i = 0; i <= len1; ++i) 
-    //     dp[i][0] = i;
-
-    // for (int j = 0; j <= len2; ++j) 
-    //     dp[0][j] = j;
-
-    // for (int i = 1; i <= len1; ++i) {
-    //     for (int j = 1; j <= len2; ++j) {
-    //         if (str1[i - 1] == str2[j - 1]) dp[i][j] = dp[i - 1][j - 1];
-    //         else dp[i][j] = min({dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]}) + 1;
-    //     }
-    // }
-
-    // return dp[len1][len2] <= d;
-
     int len1 = str1.size();
     int len2 = str2.size();
 
-    if (len1 > len2) return edit_distance_within(str2, str1, d);
     if (abs(len1 - len2) > d) return false;
 
-    std::vector<int> prev(len2 + 1, 0);
-    std::vector<int> curr(len2 + 1, 0);
+    vector<vector<int>> dp(len1 + 1, vector<int>(len2 + 1, 0));
 
-    for (int j = 0; j <= len2; ++j)
-        prev[j] = j;
+    for (int i = 0; i <= len1; ++i) 
+        dp[i][0] = i;
+
+    for (int j = 0; j <= len2; ++j) 
+        dp[0][j] = j;
 
     for (int i = 1; i <= len1; ++i) {
-        curr[0] = i;
-
         for (int j = 1; j <= len2; ++j) {
-            if (str1[i - 1] == str2[j - 1]) curr[j] = prev[j - 1];
-            else curr[j] = 1 + std::min({prev[j - 1], prev[j], curr[j - 1]});
+            if (str1[i - 1] == str2[j - 1]) dp[i][j] = dp[i - 1][j - 1];
+            else dp[i][j] = min({dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]}) + 1;
         }
-
-        if (*std::min_element(curr.begin(), curr.end()) > d) {
-            return false;
-        }
-
-        std::swap(prev, curr);
     }
 
-    return prev[len2] <= d;
+    return dp[len1][len2] <= d;
 }
 
 bool is_adjacent(const string& word1, const string& word2){ 
@@ -72,7 +43,8 @@ vector<string> generate_word_ladder(const string& begin_word, const string& end_
     string begin = lower(begin_word);
     string end = lower(end_word);
 
-    if (begin == end) return {begin};
+    if (begin == end) return {};
+
     queue<vector<string>> ladder_queue;
     ladder_queue.push({begin});
     set<string> visited;
